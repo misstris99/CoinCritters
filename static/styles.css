@@ -307,36 +307,3 @@ body {
 /* Hide/Show elements */
 .hidden { display: none; }
 .block { display: block; }
-
-/* Spin-the-wheel component removed */
-
-/* Spin-the-wheel component (reintroduced) */
-#wheel-container { max-width: 100%; margin: 0 auto; }
-#wheel {
-  --size: 320px;
-  width: var(--size);
-  height: var(--size);
-  border-radius: 50%;
-  position: relative;
-  margin: 0 auto;
-  overflow: visible; /* allow labels to show outside rim if needed */
-  box-shadow: var(--shadow-soft);
-  transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
-  background: conic-gradient(
-    #f59e0b 0deg 90deg,
-    #ef4444 90deg 180deg,
-    #10b981 180deg 270deg,
-    #3b82f6 270deg 360deg
-  );
-}
-
-.wheel-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 30; }
-
-/* labels are children of #wheel so they rotate with it */
-.wheel-label { position: absolute; left: 50%; top: 50%; transform-origin: center center; pointer-events: none; z-index: 25; white-space: nowrap; }
-.wheel-label span { display:inline-block; padding:6px 10px; background:rgba(255,255,255,0.95); border-radius:999px; font-weight:700; font-size:0.9rem; color:#071124; box-shadow:0 4px 10px rgba(2,6,23,0.08); }
-
-/* pointer above the wheel */
-.wheel-pointer { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 16px solid transparent; border-right: 16px solid transparent; border-bottom: 26px solid hsl(var(--destructive)); z-index: 60; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.12)); }
-
-@media (max-width: 420px) { #wheel { --size: 260px; } .wheel-label span { font-size:0.78rem; padding:5px 8px; } }

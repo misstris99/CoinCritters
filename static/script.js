@@ -40,8 +40,53 @@ class CoinCritters {
     } else if (page === 'profile') {
       this.initProfile();
     }
+  }
 
-    // If on pet-selection page, wire the continue button (keeps this scope)
+  getCurrentPage() {
+    const path = window.location.pathname;
+    if (path === '/monthly-goal') return 'monthly-goal';
+    if (path === '/daily-budget') return 'daily-budget';
+    if (path === '/profile') return 'profile';
+    return 'pet-selection';
+  }
+
+  navigate(page) {
+    const pages = {
+      'pet-selection': '/',
+      'monthly-goal': '/monthly-goal',
+      'daily-budget': '/daily-budget',
+      'profile': '/profile'
+    };
+    window.location.href = pages[page];
+  }
+
+  // Pet Selection Page
+  initPetSelection() {
+    const pets = ['cat', 'dog', 'cow', 'pig'];
+    const petNames = { cat: 'Whiskers', dog: 'Buddy', cow: 'Moobert', pig: 'Pinky' };
+    
+    pets.forEach(pet => {
+      const card = document.querySelector(`[data-pet="${pet}"]`);
+      if (card) {
+        if (this.data.selectedPet === pet) {
+          card.classList.add('selected');
+        }
+        
+        card.addEventListener('click', () => {
+          // Remove selected from all cards
+          document.querySelectorAll('.pet-card').forEach(c => c.classList.remove('selected'));
+          // Add selected to clicked card
+          card.classList.add('selected');
+          // Update data
+          this.updateData({ selectedPet: pet });
+          // Update continue button
+          this.updateContinueButton();
+        });
+      }
+    });
+
+    this.updateContinueButton();
+    
     const continueBtn = document.getElementById('continue-btn');
     if (continueBtn) {
       continueBtn.addEventListener('click', () => {
@@ -51,7 +96,7 @@ class CoinCritters {
       });
     }
 
-    // Update progress (default to step 1 of 3 unless pages override)
+    // Update progress
     this.updateProgress(1, 3);
   }
 
@@ -254,113 +299,3 @@ class CoinCritters {
 document.addEventListener('DOMContentLoaded', () => {
   window.coinCritters = new CoinCritters();
 });
-
-/* Modular Spin Wheel Implementation */
-;(function(global){
-  // default sectors (accessories)
-  const DEFAULT_SECTORS = [
-    { label: 'Bow', name: 'bow' },
-    { label: 'Hat', name: 'hat' },
-    { label: 'Sun', name: 'sun' },
-    { label: 'Sunglasses', name: 'sunglasses' }
-  ];
-
-  function renderLabels(wheelEl, sectors){
-    // remove existing labels container
-    let labelsWrap = wheelEl.querySelector('.wheel-labels');
-    if (labelsWrap) labelsWrap.remove();
-    labelsWrap = document.createElement('div');
-    labelsWrap.className = 'wheel-labels';
-    wheelEl.appendChild(labelsWrap);
-
-    const slice = 360 / sectors.length;
-    const size = wheelEl.clientWidth || parseInt(getComputedStyle(wheelEl).getPropertyValue('--size')) || 320;
-    const radius = size / 2;
-    const distance = Math.round(radius * 0.48);
-
-    sectors.forEach((s, i) => {
-      const angle = (i * slice) + (slice / 2);
-      const label = document.createElement('div');
-      label.className = 'wheel-label';
-      label.style.left = '50%';
-      label.style.top = '50%';
-      label.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-${distance}px)`;
-
-      const span = document.createElement('span');
-      span.textContent = s.label;
-      label.appendChild(span);
-      labelsWrap.appendChild(label);
-    });
-  }
-
-  function initWheel(config = {}){
-    const wheelId = config.wheelId || 'wheel';
-    const spinBtnId = config.spinBtnId || 'spin-btn';
-    const resultId = config.resultId || 'wheel-result';
-    const sectors = config.sectors || DEFAULT_SECTORS;
-
-    const wheel = document.getElementById(wheelId);
-    const spinBtn = document.getElementById(spinBtnId);
-    const resultEl = document.getElementById(resultId);
-    if (!wheel || !spinBtn || !resultEl) return null;
-
-    renderLabels(wheel, sectors);
-
-    let spinning = false;
-
-    function pickSector(){
-      return Math.floor(Math.random() * sectors.length);
-    }
-
-    function displayResultSector(sector){
-      resultEl.innerHTML = '';
-      const title = document.createElement('div');
-      title.textContent = `You won: ${sector.label}`;
-      title.className = 'font-bold mb-2';
-      const img = document.createElement('img');
-      img.src = `/static/accessories/${sector.name}`;
-      img.alt = sector.label;
-      img.style.width = '120px';
-      img.style.display = 'block';
-      img.style.margin = '8px auto 0';
-      resultEl.appendChild(title);
-      resultEl.appendChild(img);
-    }
-
-    function spinTo(index){
-      const sectorsCount = sectors.length;
-      const degreesPerSector = 360 / sectorsCount;
-      const fullSpins = 5;
-      const target = fullSpins * 360 + index * degreesPerSector + degreesPerSector / 2;
-      wheel.style.transition = 'transform 4s cubic-bezier(0.33, 1, 0.68, 1)';
-      wheel.style.transform = `rotate(${target}deg)`;
-      setTimeout(() => {
-        displayResultSector(sectors[index]);
-        spinning = false;
-        spinBtn.disabled = false;
-      }, 4200);
-    }
-
-    // wire button
-    spinBtn.addEventListener('click', () => {
-      if (spinning) return;
-      spinning = true;
-      spinBtn.disabled = true;
-      resultEl.textContent = '';
-      const idx = pickSector();
-      spinTo(idx);
-    });
-
-    // expose a simple API
-    return { wheel, spinBtn, resultEl, renderLabels: () => renderLabels(wheel, sectors) };
-  }
-
-  // expose globally
-  global.initWheel = initWheel;
-  global.wheelSectors = DEFAULT_SECTORS;
-
-  // Auto-init on shop page if elements exist
-  document.addEventListener('DOMContentLoaded', () => {
-    initWheel();
-  });
-})(window);
