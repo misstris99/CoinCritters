@@ -179,7 +179,7 @@ class CoinCritters {
     }
 
     if (suggestionEl && suggestedBudget > 0) {
-      suggestionEl.textContent = `Based on your $${this.data.monthlyGoal}/month goal, we suggest $${suggestedBudget}/day`;
+      suggestionEl.textContent = `Based on your ₹${this.data.monthlyGoal}/month goal, we suggest ₹${suggestedBudget}/day`;
     }
 
     // Quick amount buttons
@@ -191,7 +191,7 @@ class CoinCritters {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'btn btn-outline btn-sm';
-        btn.textContent = `$${amount}`;
+        btn.textContent = `₹${amount}`;
         btn.addEventListener('click', () => {
           if (budgetInput) {
             budgetInput.value = amount;
@@ -234,16 +234,18 @@ class CoinCritters {
   // Profile Page
   initProfile() {
     if (!this.isComplete()) {
-      this.navigate('pet-selection');
-      return;
+        this.navigate('pet-selection');
+        return;
     }
 
+    // Pet data
     const petNames = { cat: 'Whiskers', dog: 'Buddy', cow: 'Moobert', pig: 'Pinky' };
+    const petTypes = { cat: 'cat', dog: 'dog', cow: 'cow', pig: 'pig' };
     const petImages = { 
-      cat: 'cat-pet.jpg', 
-      dog: 'dog-pet.jpg', 
-      cow: 'cow-pet.jpg', 
-      pig: 'pig-pet.jpg' 
+        cat: 'cat-pet.jpg', 
+        dog: 'dog-pet.jpg', 
+        cow: 'cow-pet.jpg', 
+        pig: 'pig-pet.jpg' 
     };
 
     // Update pet info
@@ -251,23 +253,30 @@ class CoinCritters {
     const petName = document.getElementById('pet-name');
     const petType = document.getElementById('pet-type');
 
-    if (petImg) petImg.src = petImages[this.data.selectedPet];
-    if (petName) petName.textContent = petNames[this.data.selectedPet];
-    if (petType) petType.textContent = `Your ${this.data.selectedPet} companion`;
+    if (petImg && this.data.selectedPet) {
+        petImg.src = `/static/${petImages[this.data.selectedPet]}`;
+        petImg.alt = `Your ${petTypes[this.data.selectedPet]} companion`;
+    }
+    if (petName && this.data.selectedPet) {
+        petName.textContent = petNames[this.data.selectedPet];
+    }
+    if (petType && this.data.selectedPet) {
+        petType.textContent = `Your ${petTypes[this.data.selectedPet]} companion`;
+    }
 
     // Update goal and budget
     const monthlyGoalEl = document.getElementById('monthly-goal-amount');
     const dailyBudgetEl = document.getElementById('daily-budget-amount');
 
-    if (monthlyGoalEl) monthlyGoalEl.textContent = `$${this.data.monthlyGoal}`;
-    if (dailyBudgetEl) dailyBudgetEl.textContent = `$${this.data.dailyBudget}`;
+    if (monthlyGoalEl) monthlyGoalEl.textContent = `₹${this.data.monthlyGoal}`;
+    if (dailyBudgetEl) dailyBudgetEl.textContent = `₹${this.data.dailyBudget}`;
 
     // Settings button
     const settingsBtn = document.getElementById('settings-btn');
     if (settingsBtn) {
-      settingsBtn.addEventListener('click', () => {
-        this.navigate('pet-selection');
-      });
+        settingsBtn.addEventListener('click', () => {
+            this.navigate('pet-selection');
+        });
     }
   }
 
