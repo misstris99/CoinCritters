@@ -26,7 +26,6 @@
   --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
   --gradient-warm: linear-gradient(135deg, hsl(45 100% 85%), hsl(35 100% 80%));
   --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 50%));
-  --gradient-health: linear-gradient(135deg, hsl(100, 60%, 50%), hsl(120, 60%, 40%)); /* Added health gradient */
   --shadow-soft: 0 4px 20px -4px hsl(var(--primary) / 0.1);
   --shadow-card: 0 8px 30px -8px hsl(240 15% 15% / 0.1);
   --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.3);
@@ -64,20 +63,17 @@ body {
 .gap-8 { gap: 2rem; }
 
 @media (min-width: 768px) {
-  .md\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
-  .md\:grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .md\\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .md\\:grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (min-width: 1024px) {
-  .lg\:grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
-  .lg\:grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
-  .lg\:flex-row { flex-direction: row; } /* Added for responsive flex */
+  .lg\\:grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .lg\\:grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
 }
 
 /* Flex */
 .flex { display: flex; }
-.flex-1 { flex: 1 1 0%; } /* Added to make flex items grow equally */
-.flex-grow { flex-grow: 1; } /* Added for card content to fill height */
 .flex-col { flex-direction: column; }
 .items-center { align-items: center; }
 .justify-center { justify-content: center; }
@@ -116,7 +112,6 @@ body {
 .mb-4 { margin-bottom: 1rem; }
 .mb-8 { margin-bottom: 2rem; }
 .mt-2 { margin-top: 0.5rem; }
-.mt-4 { margin-top: 1rem; } /* Added utility */
 .mt-8 { margin-top: 2rem; }
 .mx-auto { margin-left: auto; margin-right: auto; }
 
@@ -126,7 +121,6 @@ body {
 .h-4 { height: 1rem; }
 .h-16 { height: 4rem; }
 .h-32 { width: 8rem; height: 8rem; }
-.h-full { height: 100%; } /* Added utility */
 
 /* Border */
 .rounded { border-radius: 0.375rem; }
@@ -276,17 +270,12 @@ body {
 .progress-bar {
   height: 100%;
   background: var(--gradient-primary);
-  transition: width 2s ease; /* Adjusted transition for health bar animation */
+  transition: width 0.5s ease;
   border-radius: 9999px;
 }
 
 .progress-bar-warm {
   background: var(--gradient-warm);
-}
-
-/* New class for the health bar fill */
-.progress-bar-health {
-    background: var(--gradient-health);
 }
 
 /* Utility */
@@ -301,7 +290,7 @@ body {
 
 /* Responsive utilities */
 @media (min-width: 640px) {
-  .sm\:flex-row { flex-direction: row; }
+  .sm\\:flex-row { flex-direction: row; }
 }
 
 /* Hide/Show elements */
