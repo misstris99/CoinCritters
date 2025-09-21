@@ -44,6 +44,43 @@
                         </div>
                     </div>
                 </div>
+                            <div style="background-color: #ddd; border-radius: 9999px; height: 16px; width: 100%; overflow: hidden;">
+
+                <!-- Health Status Card -->
+                            <div style="background-color: #ddd; border-radius: 9999px; height: 16px; width: 100%; overflow: hidden;">
+                <div id="health-bar-fill" style="
+                    background-color: #22c55e; 
+                    height: 16px; 
+                    border-radius: 9999px; 
+                    width: 0; 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    color: white; 
+                    font-size: 12px; 
+                    font-weight: bold; 
+                    user-select: none;
+                    transition: width 2s ease;
+                ">
+                    ❤️
+                </div>
+            </div>
+            <p style="font-size: 0.75rem; color: #666; margin-top: 0.25rem;">80% Healthy</p>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const healthBarFill = document.getElementById('health-bar-fill');
+        // Animate width to 80%
+        setTimeout(() => {
+            healthBarFill.style.width = '80%';
+        }, 100); // slight delay to trigger transition
+    });
+</script>
+                </div>
+    
+
 
                 <!-- Monthly Goal Card -->
                 <div class="card p-6">
