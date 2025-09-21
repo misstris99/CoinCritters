@@ -5,7 +5,168 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Profile - CoinCritters</title>
     <meta name="description" content="Your CoinCritters profile with your pet companion, monthly savings goal, and daily budget tracking.">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    
+    <style>
+        /* CoinCritters Design System */
+        :root {
+          --background: 135 50% 98%;
+          --foreground: 240 15% 15%;
+          --card: 0 0% 100%;
+          --card-foreground: 240 15% 15%;
+          --primary: 142 76% 36%;
+          --primary-foreground: 0 0% 98%;
+          --primary-glow: 142 76% 50%;
+          --muted: 210 40% 96%;
+          --muted-foreground: 215 16% 47%;
+          --accent: 35 100% 85%;
+          --destructive: 0 84% 60%;
+          --border: 220 13% 91%;
+          --input: 220 13% 91%;
+          --radius: 1rem;
+          --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+          --gradient-warm: linear-gradient(135deg, hsl(45 100% 85%), hsl(35 100% 80%));
+          --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 50%));
+          --gradient-health: linear-gradient(135deg, hsl(100, 60%, 50%), hsl(120, 60%, 40%));
+          --shadow-card: 0 8px 30px -8px hsl(240 15% 15% / 0.1);
+          --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.3);
+          --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+          background: hsl(var(--background));
+          color: hsl(var(--foreground));
+          line-height: 1.6;
+        }
+
+        .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 1.5rem;
+        }
+
+        /* Layout & Flex */
+        .min-h-screen { min-height: 100vh; }
+        .flex { display: flex; }
+        .flex-1 { flex: 1 1 0%; }
+        .flex-grow { flex-grow: 1; }
+        .flex-col { flex-direction: column; }
+        .gap-6 { gap: 1.5rem; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        @media (min-width: 1024px) { .lg\:flex-row { flex-direction: row; } }
+        @media (min-width: 640px) { .sm\:flex-row { flex-direction: row; } }
+        .gap-4 { gap: 1rem; }
+        .justify-end { justify-content: flex-end; }
+        .space-y-4 > * + * { margin-top: 1rem; }
+        .space-y-6 > * + * { margin-top: 1.5rem; }
+
+        /* Typography */
+        .text-center { text-align: center; }
+        .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+        .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+        .font-medium { font-weight: 500; }
+        .text-foreground { color: hsl(var(--foreground)); }
+        .text-muted-foreground { color: hsl(var(--muted-foreground)); }
+        .text-primary { color: hsl(var(--primary)); }
+        .capitalize { text-transform: capitalize; }
+
+        /* Sizing & Spacing */
+        .w-full { width: 100%; }
+        .w-32 { width: 8rem; }
+        .h-full { height: 100%; }
+        .h-32 { height: 8rem; }
+        .h-4 { height: 1rem; }
+        .max-w-sm { max-width: 24rem; }
+        .p-6 { padding: 1.5rem; }
+        .p-8 { padding: 2rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mt-8 { margin-top: 2rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+
+        /* Card & Borders */
+        .card {
+          background: hsl(var(--card));
+          border: 1px solid hsl(var(--border));
+          border-radius: calc(var(--radius) - 2px);
+          box-shadow: var(--shadow-card);
+        }
+        .rounded-full { border-radius: 9999px; }
+        .rounded-lg { border-radius: calc(var(--radius) - 2px); }
+
+        /* Background & Misc */
+        .bg-background { background: hsl(var(--background)); }
+        .bg-accent { background: hsl(var(--accent) / 0.2); }
+        .object-cover { object-fit: cover; }
+        .hidden { display: none; }
+        
+        /* Buttons */
+        .btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          white-space: nowrap;
+          border-radius: calc(var(--radius) - 2px);
+          font-size: 0.875rem;
+          font-weight: 500;
+          transition: var(--transition-smooth);
+          cursor: pointer;
+          border: none;
+        }
+        .btn-lg { height: 2.75rem; padding: 0 2rem; }
+        .btn-primary { background: var(--gradient-primary); color: hsl(var(--primary-foreground)); }
+        .btn-primary:hover { box-shadow: var(--shadow-glow); transform: translateY(-2px); }
+        .btn-success { background: var(--gradient-success); color: hsl(var(--primary-foreground)); }
+        .btn-outline { border: 1px solid hsl(var(--border)); background: transparent; color: hsl(var(--foreground)); }
+        .btn-outline:hover { background: hsl(var(--accent)); }
+        .btn-ghost { background: transparent; color: hsl(var(--muted-foreground)); }
+        .btn-ghost:hover { background: hsl(var(--accent)); color: hsl(var(--foreground));}
+
+        /* Input */
+        .input {
+          display: flex;
+          height: 2.5rem;
+          width: 100%;
+          border-radius: calc(var(--radius) - 2px);
+          border: 1px solid hsl(var(--input));
+          background: hsl(var(--background));
+          padding: 0.5rem 0.75rem;
+          font-size: 0.875rem;
+        }
+        .input:focus { outline: none; box-shadow: 0 0 0 2px hsl(var(--ring)); }
+
+        /* Progress Bar */
+        .progress { background: hsl(var(--muted)); border-radius: 9999px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--gradient-primary); transition: width 2s ease; border-radius: 9999px; }
+        .progress-bar-warm { background: var(--gradient-warm); }
+        .progress-bar-health { background: var(--gradient-health); }
+
+        /* Positioning */
+        .fixed { position: fixed; }
+        .top-0 { top: 0; }
+        .left-0 { left: 0; }
+        .z-50 { z-index: 50; }
+
+        /* NEW: Styles for the modal overlay to create the blur effect */
+        .modal-overlay {
+          background-color: rgba(30, 41, 59, 0.5); /* Semi-transparent dark background */
+          -webkit-backdrop-filter: blur(4px); /* Blur effect for Safari */
+          backdrop-filter: blur(4px); /* Standard blur effect */
+        }
+    </style>
 </head>
 <body>
     <div class="min-h-screen bg-background">
@@ -49,9 +210,9 @@
 
                 <!-- Monthly Goal Card -->
                 <div class="card p-6 flex flex-col h-full flex-1">
-                    <div class="text-center space-y-4 flex-grow">
+                     <div class="text-center space-y-4 flex-grow">
                         <h2 class="text-2xl font-bold text-foreground">Monthly Goal</h2>
-                        <div class="space-y-2">
+                        <div class="space-y-4">
                             <div id="monthly-goal-amount" class="text-4xl font-bold text-primary">₹500</div>
                             <p class="text-muted-foreground">Target savings per month</p>
                         </div>
@@ -66,9 +227,9 @@
 
                 <!-- Daily Budget Card -->
                 <div class="card p-6 flex flex-col h-full flex-1">
-                    <div class="text-center space-y-4 flex-grow">
+                     <div class="text-center space-y-4 flex-grow">
                         <h2 class="text-2xl font-bold text-foreground">Daily Budget</h2>
-                        <div class="space-y-2">
+                        <div class="space-y-4">
                             <div id="daily-budget-amount" class="text-4xl font-bold text-foreground">₹16.7</div>
                             <p class="text-muted-foreground">Available to spend today</p>
                         </div>
@@ -94,8 +255,8 @@
         </div>
     </div>
 
-    <!-- Add Expense Popup (Modal) - Styled with CSS classes -->
-    <div id="add-expense-modal" class="hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <!-- Add Expense Popup (Modal) - UPDATED with new class -->
+    <div id="add-expense-modal" class="hidden fixed top-0 left-0 w-full h-full modal-overlay flex items-center justify-center z-50">
         <div class="card p-8 rounded-lg w-full max-w-sm space-y-6">
             <h2 class="text-2xl font-bold text-foreground">Add Expense</h2>
             <div>
@@ -109,61 +270,38 @@
         </div>
     </div>
 
-    <!-- All JavaScript logic is now inside this single block -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- 1. Data Loading and Definitions ---
-            const petNames = { 
-              cat: 'Whiskers the Cat', 
-              turtle: 'Tortino The Turtle', 
-              fox: 'Foxy', 
-              axolotl: 'Axy' 
-            };
-            const petImages = { 
-              cat: 'animals/cat.jpg', 
-              turtle: 'animals/turtle.jpg', 
-              fox: 'animals/fox.jpg', 
-              axolotl: 'animals/axolotl.jpg' 
-            };
+            const petNames = { cat: 'Whiskers the Cat', turtle: 'Tortino The Turtle', fox: 'Foxy', axolotl: 'Axy' };
+            const petImages = { cat: 'animals/cat.jpg', turtle: 'animals/turtle.jpg', fox: 'animals/fox.jpg', axolotl: 'animals/axolotl.jpg' };
             
             const loadData = () => {
               const saved = localStorage.getItem('coincritters-data');
               return saved ? JSON.parse(saved) : {
-                selectedPet: 'cat', // Default to cat if no data
-                monthlyGoal: 500,
-                dailyBudget: 16.7
+                selectedPet: 'cat', monthlyGoal: 500, dailyBudget: 16.7
               };
             };
             
             const data = loadData();
 
-            // --- 2. Logic to Update Page Content ---
-            // Update Pet Info
             const petImageEl = document.getElementById('pet-image');
             const petNameEl = document.getElementById('pet-name');
             const petTypeEl = document.getElementById('pet-type');
             if (data.selectedPet) {
-                // CORRECTED LINE: Manually build the static path for JavaScript
-                petImageEl.src = `/static/${petImages[data.selectedPet]}`;
-                petNameEl.textContent = petNames[data.selectedPet];
-                petTypeEl.textContent = `Your ${data.selectedPet} companion`;
+              petImageEl.src = `/static/${petImages[data.selectedPet]}`;
+              petNameEl.textContent = petNames[data.selectedPet];
+              petTypeEl.textContent = `Your ${data.selectedPet} companion`;
             }
 
-            // Update Goals
             document.getElementById('monthly-goal-amount').textContent = `₹${data.monthlyGoal}`;
             document.getElementById('daily-budget-amount').textContent = `₹${data.dailyBudget}`;
 
-
-            // --- Health Bar Animation (Existing Code) ---
             const healthBarFill = document.getElementById('health-bar-fill');
             if (healthBarFill) {
-                setTimeout(() => {
-                    healthBarFill.style.width = '80%';
-                }, 100);
+                setTimeout(() => { healthBarFill.style.width = '80%'; }, 100);
             }
 
-            // --- Add Expense Modal Logic (Existing Code) ---
             const addExpenseModal = document.getElementById('add-expense-modal');
             const openModalBtn = document.getElementById('add-expense-btn');
             const closeModalBtn = document.getElementById('cancel-expense-btn');
