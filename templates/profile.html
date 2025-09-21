@@ -131,6 +131,7 @@
                     <button class="btn btn-primary btn-lg">
                         Add Expense
                     </button>
+
                     <button class="btn btn-success btn-lg">
                         Record Savings
                     </button>
@@ -150,5 +151,43 @@
     </div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <!--Add expense popup-->
+    <div id="add-expense-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+      <div style="background:white; padding:2rem; border-radius:1rem; max-width:350px; margin:auto; box-shadow:0 2px 16px rgba(0,0,0,0.2);">
+        <h2 style="margin-bottom:1rem;">Add Expense</h2>
+        <label>
+          Amount Spent (₹):
+          <input id="expense-amount" type="number" step="0.01" min="0" style="width:100%; padding:8px; margin-top:8px; margin-bottom:16px;" placeholder="0.00" />
+        </label>
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+          <button onclick="closeExpenseModal()">Cancel</button>
+          <button onclick="handleAddExpense()">Add</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      // Show popup when Add Expense button is clicked
+      document.querySelector('.btn-primary').onclick = function() {
+        document.getElementById('add-expense-modal').style.display = 'flex';
+      };
+
+      function closeExpenseModal() {
+        document.getElementById('add-expense-modal').style.display = 'none';
+        document.getElementById('expense-amount').value = '';
+      }
+
+      function handleAddExpense() {
+        const amount = document.getElementById('expense-amount').value;
+        if (!amount || parseFloat(amount) <= 0) {
+          alert('Please enter a valid amount.');
+          return;
+        }
+        // TODO: Add your expense handling logic here (e.g. send to backend)
+        alert('Expense added: ₹' + amount);
+        closeExpenseModal();
+     }
+    </script>
+
+
 </body>
 </html>
