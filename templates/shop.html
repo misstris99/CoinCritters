@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Shop — CoinCritters</title>
+		<link rel="stylesheet" href="/static/styles.css">
+	</head>
+	<body class="bg-background min-h-screen">
+		<div class="container">
+			<h1 class="text-3xl text-center mb-8">Shop & Rewards</h1>
+
+			<section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+				<div class="card p-6 relative text-center">
+					<h2 class="text-2xl mb-4">Spin the Wheel</h2>
+					<div id="wheel-container" class="mx-auto" style="width:360px; max-width:90%; position: relative;">
+						<!-- fixed pointer (does NOT rotate with the wheel) -->
+						<div id="wheel-pointer" class="wheel-pointer" aria-hidden="true"></div>
+
+						<!-- Wheel (4 sectors) -->
+						<div id="wheel" class="wheel" aria-hidden="false">
+							<div class="wheel-center">
+								<button id="spin-btn" class="btn btn-primary" style="padding:0.6rem 1rem;">Spin</button>
+							</div>
+						</div>
+					</div>
+					<div id="wheel-result" class="mt-4 text-lg text-muted-foreground"></div>
+				</div>
+
+				<div class="card p-6">
+					<h2 class="text-2xl mb-4">Available Items</h2>
+					<p class="text-sm text-muted-foreground">Use your spins to win accessories and coins for your pet.</p>
+					<ul class="mt-4">
+						<li>Bow - 50 coins</li>
+						<li>Hat - 100 coins</li>
+						<li>Sunglasses - 75 coins</li>
+					</ul>
+				</div>
+			</section>
+		</div>
+
+		<script src="/static/script.js"></script>
+	</body>
+</html>
