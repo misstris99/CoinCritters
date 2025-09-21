@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Daily Budget - CoinCritters</title>
+    <meta name="description" content="Set your daily spending budget with CoinCritters to complete your setup and start saving money.">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="min-h-screen bg-background">
+        <div class="container" style="max-width: 768px;">
+            <!-- Progress Indicator -->
+            <div class="mb-8">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="text-sm text-muted-foreground" id="progress-text">Step 3 of 3</div>
+                </div>
+                <div class="w-full progress h-4">
+                    <div class="progress-bar" id="progress-bar" style="width: 100%"></div>
+                </div>
+            </div>
+
+            <!-- Main Card -->
+            <div class="card p-8">
+                <div class="text-center mb-8">
+                    <h1 class="text-4xl font-bold text-foreground mb-4">
+                        Set Your Daily Budget
+                    </h1>
+                    <p class="text-xl text-muted-foreground">
+                        How much can you spend each day?
+                    </p>
+                    <p id="suggestion" class="text-sm text-muted-foreground mt-2"></p>
+                </div>
+
+                <form id="budget-form" class="space-y-6">
+                    <div class="space-y-2">
+                        <label for="daily-budget" class="text-lg font-medium text-foreground block">
+                            Daily Spending Budget
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 transform text-2xl font-bold text-muted-foreground">
+                                $
+                            </span>
+                            <input
+                                id="daily-budget"
+                                type="number"
+                                placeholder="16.7"
+                                class="input input-lg"
+                                min="0.01"
+                                max="500"
+                                step="0.01"
+                                required
+                            />
+                        </div>
+                        <p id="error" class="text-destructive text-sm hidden"></p>
+                    </div>
+
+                    <div class="text-center space-y-4">
+                        <div class="flex justify-center space-x-4" id="amount-buttons">
+                            <!-- Buttons will be populated by JavaScript -->
+                        </div>
+                        
+                        <button 
+                            type="submit"
+                            class="btn btn-success btn-lg px-12"
+                        >
+                            Complete Setup!
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
