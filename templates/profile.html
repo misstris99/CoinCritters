@@ -29,7 +29,7 @@
                         <div class="w-32 h-32 mx-auto rounded-full overflow-hidden bg-accent">
                             <img 
                                 id="pet-image"
-                                src="{{ url_for('static', filename='cat-pet.jpg') }}" 
+                                src="{{ url_for('static', filename='animals/cat.jpg') }}" 
                                 alt="Your pet companion"
                                 class="w-full h-full object-cover"
                             />
@@ -112,7 +112,50 @@
     <!-- All JavaScript logic is now inside this single block -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Health Bar Animation ---
+            
+            // --- 1. Data Loading and Definitions ---
+            const petNames = { 
+              cat: 'Whiskers the Cat', 
+              turtle: 'Tortino The Turtle', 
+              fox: 'Foxy', 
+              axolotl: 'Axy' 
+            };
+            const petImages = { 
+              cat: 'animals/cat.jpg', 
+              turtle: 'animals/turtle.jpg', 
+              fox: 'animals/fox.jpg', 
+              axolotl: 'animals/axolotl.jpg' 
+            };
+            
+            const loadData = () => {
+              const saved = localStorage.getItem('coincritters-data');
+              return saved ? JSON.parse(saved) : {
+                selectedPet: 'cat', // Default to cat if no data
+                monthlyGoal: 500,
+                dailyBudget: 16.7
+              };
+            };
+            
+            const data = loadData();
+
+            // --- 2. Logic to Update Page Content ---
+            // Update Pet Info
+            const petImageEl = document.getElementById('pet-image');
+            const petNameEl = document.getElementById('pet-name');
+            const petTypeEl = document.getElementById('pet-type');
+            if (data.selectedPet) {
+                // CORRECTED LINE: Manually build the static path for JavaScript
+                petImageEl.src = `/static/${petImages[data.selectedPet]}`;
+                petNameEl.textContent = petNames[data.selectedPet];
+                petTypeEl.textContent = `Your ${data.selectedPet} companion`;
+            }
+
+            // Update Goals
+            document.getElementById('monthly-goal-amount').textContent = `₹${data.monthlyGoal}`;
+            document.getElementById('daily-budget-amount').textContent = `₹${data.dailyBudget}`;
+
+
+            // --- Health Bar Animation (Existing Code) ---
             const healthBarFill = document.getElementById('health-bar-fill');
             if (healthBarFill) {
                 setTimeout(() => {
@@ -120,39 +163,33 @@
                 }, 100);
             }
 
-            // --- Add Expense Modal Logic ---
+            // --- Add Expense Modal Logic (Existing Code) ---
             const addExpenseModal = document.getElementById('add-expense-modal');
             const openModalBtn = document.getElementById('add-expense-btn');
             const closeModalBtn = document.getElementById('cancel-expense-btn');
             const confirmExpenseBtn = document.getElementById('confirm-expense-btn');
             const expenseAmountInput = document.getElementById('expense-amount');
 
-            // Check if all modal elements exist before adding listeners
             if (addExpenseModal && openModalBtn && closeModalBtn && confirmExpenseBtn && expenseAmountInput) {
-                
-                // Function to open the modal
                 openModalBtn.addEventListener('click', () => {
                     addExpenseModal.classList.remove('hidden');
-                    addExpenseModal.classList.add('flex'); // Use flex to display
+                    addExpenseModal.classList.add('flex');
                 });
 
-                // Function to close the modal
                 const closeExpenseModal = () => {
                     addExpenseModal.classList.add('hidden');
                     addExpenseModal.classList.remove('flex');
-                    expenseAmountInput.value = ''; // Clear input on close
+                    expenseAmountInput.value = '';
                 };
                 
                 closeModalBtn.addEventListener('click', closeExpenseModal);
 
-                // Function to handle adding the expense
                 const handleAddExpense = () => {
                     const amount = expenseAmountInput.value;
                     if (!amount || parseFloat(amount) <= 0) {
                         alert('Please enter a valid amount.');
                         return;
                     }
-                    // TODO: Add your expense handling logic here (e.g., send to backend)
                     alert('Expense added: ₹' + amount);
                     closeExpenseModal();
                 };
@@ -163,3 +200,4 @@
     </script>
 </body>
 </html>
+
