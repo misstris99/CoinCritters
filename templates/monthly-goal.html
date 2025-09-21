@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Monthly Goal - CoinCritters</title>
+    <meta name="description" content="Set your monthly savings goal with CoinCritters and start your money-saving journey with your pet companion.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="min-h-screen bg-background">
+        <div class="container" style="max-width: 768px;">
+            <!-- Progress Indicator -->
+            <div class="mb-8">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="text-sm text-muted-foreground" id="progress-text">Step 2 of 3</div>
+                </div>
+                <div class="w-full progress h-4">
+                    <div class="progress-bar" id="progress-bar" style="width: 66.66%"></div>
+                </div>
+            </div>
+
+            <!-- Main Card -->
+            <div class="card p-8">
+                <div class="text-center mb-8">
+                    <h1 class="text-4xl font-bold text-foreground mb-4">
+                        Set Your Monthly Goal
+                    </h1>
+                    <p class="text-xl text-muted-foreground">
+                        How much would you like to save each month?
+                    </p>
+                </div>
+
+                <form id="goal-form" class="space-y-6">
+                    <div class="space-y-2">
+                        <label for="monthly-goal" class="text-lg font-medium text-foreground block">
+                            Monthly Savings Goal
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 transform text-2xl font-bold text-muted-foreground">
+                                $
+                            </span>
+                            <input
+                                id="monthly-goal"
+                                type="number"
+                                placeholder="500"
+                                class="input input-lg"
+                                min="1"
+                                max="10000"
+                                required
+                            />
+                        </div>
+                        <p id="error" class="text-destructive text-sm hidden"></p>
+                    </div>
+
+                    <div class="text-center space-y-4">
+                        <div class="flex justify-center space-x-4">
+                            <button type="button" class="btn btn-outline btn-sm" data-amount="100">$100</button>
+                            <button type="button" class="btn btn-outline btn-sm" data-amount="250">$250</button>
+                            <button type="button" class="btn btn-outline btn-sm" data-amount="500">$500</button>
+                            <button type="button" class="btn btn-outline btn-sm" data-amount="1000">$1000</button>
+                        </div>
+                        
+                        <button 
+                            type="submit"
+                            class="btn btn-primary btn-lg px-12"
+                        >
+                            Set My Goal
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

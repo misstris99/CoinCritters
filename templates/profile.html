@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Profile - CoinCritters</title>
+    <meta name="description" content="Your CoinCritters profile with your pet companion, monthly savings goal, and daily budget tracking.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="min-h-screen bg-background">
+        <div class="container">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-foreground mb-2">
+                    Welcome to CoinCritters!
+                </h1>
+                <p class="text-xl text-muted-foreground">
+                    You're all set up and ready to save money with your critter
+                </p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Pet Card -->
+                <div class="card p-6">
+                    <div class="text-center space-y-4">
+                        <h2 class="text-2xl font-bold text-foreground">Your Critter</h2>
+                        <div class="w-32 h-32 mx-auto rounded-full overflow-hidden bg-accent">
+                            <img 
+                                id="pet-image"
+                                src="{{ url_for('static', filename='cat-pet.jpg') }}" 
+                                alt="Your pet companion"
+                                class="w-full h-32 object-cover"
+                             />
+                        </div>
+                        <div>
+                            <h3 id="pet-name" class="text-xl font-semibold text-foreground">
+                                Whiskers
+                            </h3>
+                            <p id="pet-type" class="text-muted-foreground capitalize">
+                                Your cat companion
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monthly Goal Card -->
+                <div class="card p-6">
+                    <div class="text-center space-y-4">
+                        <h2 class="text-2xl font-bold text-foreground">Monthly Goal</h2>
+                        <div class="space-y-2">
+                            <div id="monthly-goal-amount" class="text-4xl font-bold text-primary">
+                                $500
+                            </div>
+                            <p class="text-muted-foreground">
+                                Target savings per month
+                            </p>
+                        </div>
+                        <div class="w-full progress h-4">
+                            <div class="progress-bar" style="width: 25%"></div>
+                        </div>
+                        <p class="text-sm text-muted-foreground">
+                            25% complete this month
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Daily Budget Card -->
+                <div class="card p-6">
+                    <div class="text-center space-y-4">
+                        <h2 class="text-2xl font-bold text-foreground">Daily Budget</h2>
+                        <div class="space-y-2">
+                            <div id="daily-budget-amount" class="text-4xl font-bold text-foreground">
+                                $16.7
+                            </div>
+                            <p class="text-muted-foreground">
+                                Available to spend today
+                            </p>
+                        </div>
+                        <div class="w-full progress h-4">
+                            <div class="progress-bar progress-bar-warm" style="width: 75%"></div>
+                        </div>
+                        <p class="text-sm text-muted-foreground">
+                            75% of daily budget remaining
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="text-center mt-8 space-y-4">
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button class="btn btn-primary btn-lg">
+                        Add Expense
+                    </button>
+                    <button class="btn btn-success btn-lg">
+                        Record Savings
+                    </button>
+                    <button class="btn btn-outline btn-lg">
+                        View History
+                    </button>
+                </div>
+                
+                <button 
+                    id="settings-btn"
+                    class="btn btn-ghost text-muted-foreground"
+                >
+                    Change Settings
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

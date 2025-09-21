@@ -44,18 +44,18 @@ class CoinCritters {
 
   getCurrentPage() {
     const path = window.location.pathname;
-    if (path.includes('monthly-goal')) return 'monthly-goal';
-    if (path.includes('daily-budget')) return 'daily-budget';
-    if (path.includes('profile')) return 'profile';
+    if (path === '/monthly-goal') return 'monthly-goal';
+    if (path === '/daily-budget') return 'daily-budget';
+    if (path === '/profile') return 'profile';
     return 'pet-selection';
   }
 
   navigate(page) {
     const pages = {
-      'pet-selection': 'index.html',
-      'monthly-goal': 'monthly-goal.html',
-      'daily-budget': 'daily-budget.html',
-      'profile': 'profile.html'
+      'pet-selection': '/',
+      'monthly-goal': '/monthly-goal',
+      'daily-budget': '/daily-budget',
+      'profile': '/profile'
     };
     window.location.href = pages[page];
   }

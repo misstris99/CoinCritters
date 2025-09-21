@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Set Daily Budget - CoinCritters</title>
     <meta name="description" content="Set your daily spending budget with CoinCritters to complete your setup and start saving money.">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="min-h-screen bg-background">
@@ -72,6 +72,6 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
