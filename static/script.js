@@ -2,6 +2,13 @@
 class CoinCritters {
   constructor() {
     this.data = this.loadData();
+    // NEW: Centralized pet names to be used by all functions
+    this.petNames = { 
+      cat: 'Whiskers the Cat', 
+      turtle: 'Tortino The Turtle', 
+      fox: 'Foxy', 
+      axolotl: 'Axy' 
+    };
     this.init();
   }
 
@@ -28,7 +35,6 @@ class CoinCritters {
   }
 
   init() {
-    // Initialize based on current page
     const page = this.getCurrentPage();
     
     if (page === 'pet-selection') {
@@ -44,9 +50,9 @@ class CoinCritters {
 
   getCurrentPage() {
     const path = window.location.pathname;
-    if (path === '/monthly-goal') return 'monthly-goal';
-    if (path === '/daily-budget') return 'daily-budget';
-    if (path === '/profile') return 'profile';
+    if (path.includes('/monthly-goal')) return 'monthly-goal';
+    if (path.includes('/daily-budget')) return 'daily-budget';
+    if (path.includes('/profile')) return 'profile';
     return 'pet-selection';
   }
 
@@ -62,31 +68,25 @@ class CoinCritters {
 
   // Pet Selection Page
   initPetSelection() {
-    const pets = ['cat', 'dog', 'cow', 'pig'];
-    const petNames = { cat: 'Whiskers', dog: 'Buddy', cow: 'Moobert', pig: 'Pinky' };
-    
+    const pets = ['cat', 'turtle', 'fox', 'axolotl'];
+
     pets.forEach(pet => {
       const card = document.querySelector(`[data-pet="${pet}"]`);
       if (card) {
         if (this.data.selectedPet === pet) {
           card.classList.add('selected');
         }
-        
         card.addEventListener('click', () => {
-          // Remove selected from all cards
           document.querySelectorAll('.pet-card').forEach(c => c.classList.remove('selected'));
-          // Add selected to clicked card
           card.classList.add('selected');
-          // Update data
           this.updateData({ selectedPet: pet });
-          // Update continue button
-          this.updateContinueButton();
+          this.updateContinueButton(); // This will now work
         });
       }
     });
 
     this.updateContinueButton();
-    
+
     const continueBtn = document.getElementById('continue-btn');
     if (continueBtn) {
       continueBtn.addEventListener('click', () => {
@@ -96,18 +96,16 @@ class CoinCritters {
       });
     }
 
-    // Update progress
     this.updateProgress(1, 3);
   }
 
+  // ADDED BACK: The missing function to enable and update the button
   updateContinueButton() {
     const continueBtn = document.getElementById('continue-btn');
-    const petNames = { cat: 'Whiskers', dog: 'Buddy', cow: 'Moobert', pig: 'Pinky' };
-    
     if (continueBtn) {
       if (this.data.selectedPet) {
         continueBtn.disabled = false;
-        continueBtn.textContent = `Continue with ${petNames[this.data.selectedPet]}`;
+        continueBtn.textContent = `Continue with ${this.petNames[this.data.selectedPet]}`;
       } else {
         continueBtn.disabled = true;
         continueBtn.textContent = 'Continue with Pet';
@@ -125,13 +123,12 @@ class CoinCritters {
       goalInput.value = this.data.monthlyGoal;
     }
 
-    // Quick amount buttons
     document.querySelectorAll('[data-amount]').forEach(btn => {
       btn.addEventListener('click', () => {
         const amount = btn.getAttribute('data-amount');
         if (goalInput) {
           goalInput.value = amount;
-          errorEl.textContent = '';
+          if (errorEl) errorEl.textContent = '';
         }
       });
     });
@@ -140,17 +137,14 @@ class CoinCritters {
       form.addEventListener('submit', (e) => {
         e.preventDefault();
         const goalAmount = parseFloat(goalInput.value);
-        
         if (!goalAmount || goalAmount <= 0) {
           errorEl.textContent = 'Please enter a valid amount';
           return;
         }
-        
         if (goalAmount > 10000) {
           errorEl.textContent = "That's quite ambitious! Try a smaller goal to start";
           return;
         }
-
         this.updateData({ monthlyGoal: goalAmount });
         this.navigate('daily-budget');
       });
@@ -158,7 +152,7 @@ class CoinCritters {
 
     if (goalInput) {
       goalInput.addEventListener('input', () => {
-        errorEl.textContent = '';
+        if (errorEl) errorEl.textContent = '';
       });
     }
 
@@ -171,7 +165,6 @@ class CoinCritters {
     const form = document.getElementById('budget-form');
     const errorEl = document.getElementById('error');
     const suggestionEl = document.getElementById('suggestion');
-
     const suggestedBudget = this.data.monthlyGoal ? Math.round((this.data.monthlyGoal / 30) * 10) / 10 : 0;
     
     if (budgetInput && this.data.dailyBudget) {
@@ -182,7 +175,6 @@ class CoinCritters {
       suggestionEl.textContent = `Based on your ₹${this.data.monthlyGoal}/month goal, we suggest ₹${suggestedBudget}/day`;
     }
 
-    // Quick amount buttons
     const amounts = [10, 25, 50, suggestedBudget].filter(a => a > 0);
     const buttonContainer = document.getElementById('amount-buttons');
     if (buttonContainer) {
@@ -195,7 +187,7 @@ class CoinCritters {
         btn.addEventListener('click', () => {
           if (budgetInput) {
             budgetInput.value = amount;
-            errorEl.textContent = '';
+            if (errorEl) errorEl.textContent = '';
           }
         });
         buttonContainer.appendChild(btn);
@@ -206,17 +198,14 @@ class CoinCritters {
       form.addEventListener('submit', (e) => {
         e.preventDefault();
         const budgetAmount = parseFloat(budgetInput.value);
-        
         if (!budgetAmount || budgetAmount <= 0) {
           errorEl.textContent = 'Please enter a valid amount';
           return;
         }
-        
         if (budgetAmount > 500) {
           errorEl.textContent = "That's quite a lot for daily spending! Consider a smaller budget";
           return;
         }
-
         this.updateData({ dailyBudget: budgetAmount });
         this.navigate('profile');
       });
@@ -224,7 +213,7 @@ class CoinCritters {
 
     if (budgetInput) {
       budgetInput.addEventListener('input', () => {
-        errorEl.textContent = '';
+        if (errorEl) errorEl.textContent = '';
       });
     }
 
@@ -234,50 +223,93 @@ class CoinCritters {
   // Profile Page
   initProfile() {
     if (!this.isComplete()) {
-        this.navigate('pet-selection');
-        return;
+      this.navigate('pet-selection');
+      return;
     }
 
-    // Pet data
-    const petNames = { cat: 'Whiskers', dog: 'Buddy', cow: 'Moobert', pig: 'Pinky' };
-    const petTypes = { cat: 'cat', dog: 'dog', cow: 'cow', pig: 'pig' };
+    // FIXED: Now uses the central pet names and has the correct types
+    const petTypes = { cat: 'cat', turtle: 'turtle', fox: 'fox', axolotl: 'axolotl' };
     const petImages = { 
-        cat: 'cat-pet.jpg', 
-        dog: 'dog-pet.jpg', 
-        cow: 'cow-pet.jpg', 
-        pig: 'pig-pet.jpg' 
+      cat: 'animals/cat.jpg', 
+      turtle: 'animals/turtle.jpg', 
+      fox: 'animals/fox.jpg', 
+      axolotl: 'animals/axolotl.jpg' 
     };
 
-    // Update pet info
     const petImg = document.getElementById('pet-image');
     const petName = document.getElementById('pet-name');
     const petType = document.getElementById('pet-type');
 
     if (petImg && this.data.selectedPet) {
-        petImg.src = `/static/${petImages[this.data.selectedPet]}`;
-        petImg.alt = `Your ${petTypes[this.data.selectedPet]} companion`;
+      petImg.src = `/static/${petImages[this.data.selectedPet]}`;
+      petImg.alt = `Your ${petTypes[this.data.selectedPet]} companion`;
     }
     if (petName && this.data.selectedPet) {
-        petName.textContent = petNames[this.data.selectedPet];
+      petName.textContent = this.petNames[this.data.selectedPet];
     }
     if (petType && this.data.selectedPet) {
-        petType.textContent = `Your ${petTypes[this.data.selectedPet]} companion`;
+      petType.textContent = `Your ${petTypes[this.data.selectedPet]} companion`;
     }
 
-    // Update goal and budget
     const monthlyGoalEl = document.getElementById('monthly-goal-amount');
     const dailyBudgetEl = document.getElementById('daily-budget-amount');
 
     if (monthlyGoalEl) monthlyGoalEl.textContent = `₹${this.data.monthlyGoal}`;
     if (dailyBudgetEl) dailyBudgetEl.textContent = `₹${this.data.dailyBudget}`;
 
-    // Settings button
     const settingsBtn = document.getElementById('settings-btn');
     if (settingsBtn) {
-        settingsBtn.addEventListener('click', () => {
-            this.navigate('pet-selection');
-        });
+      settingsBtn.addEventListener('click', () => {
+        this.navigate('pet-selection');
+      });
     }
+
+    this.initHealthBar();
+    this.initExpenseModal();
+  }
+
+  initHealthBar() {
+    const healthBarFill = document.getElementById('health-bar-fill');
+    if (healthBarFill) {
+      setTimeout(() => {
+        healthBarFill.style.width = '80%';
+      }, 100);
+    }
+  }
+
+  initExpenseModal() {
+    const addExpenseModal = document.getElementById('add-expense-modal');
+    const openModalBtn = document.getElementById('add-expense-btn');
+    const closeModalBtn = document.getElementById('cancel-expense-btn');
+    const confirmExpenseBtn = document.getElementById('confirm-expense-btn');
+    const expenseAmountInput = document.getElementById('expense-amount');
+
+    if (!addExpenseModal || !openModalBtn || !closeModalBtn || !confirmExpenseBtn || !expenseAmountInput) {
+      return;
+    }
+
+    openModalBtn.addEventListener('click', () => {
+      addExpenseModal.classList.remove('hidden');
+    });
+
+    const closeExpenseModal = () => {
+      addExpenseModal.classList.add('hidden');
+      expenseAmountInput.value = '';
+    };
+    
+    closeModalBtn.addEventListener('click', closeExpenseModal);
+
+    const handleAddExpense = () => {
+      const amount = expenseAmountInput.value;
+      if (!amount || parseFloat(amount) <= 0) {
+        alert('Please enter a valid amount.');
+        return;
+      }
+      alert('Expense added: ₹' + amount);
+      closeExpenseModal();
+    };
+
+    confirmExpenseBtn.addEventListener('click', handleAddExpense);
   }
 
   updateProgress(current, total) {
