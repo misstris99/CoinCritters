@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop — Spin the Wheel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .wheel-wrap {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+
+        #wheel {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 8px solid #3b82f6;
+            transition: transform 3s cubic-bezier(.25, 1, .5, 1);
+        }
+
+        .sector {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform-origin: 50% 50%;
+            clip-path: polygon(50% 50%, 100% 0, 100% 100%);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            padding-right: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .sector:nth-child(1) {
+            background-color: #ef4444; /* Red */
+            transform: rotate(0deg);
+        }
+
+        .sector:nth-child(2) {
+            background-color: #22c55e; /* Green */
+            transform: rotate(90deg);
+        }
+
+        .sector:nth-child(3) {
+            background-color: #3b82f6; /* Blue */
+            transform: rotate(180deg);
+        }
+
+        .sector:nth-child(4) {
+            background-color: #f97316; /* Orange */
+            transform: rotate(270deg);
+        }
+
+        /* Styles for text within each sector */
+        .text-content {
+            font-size: 1rem;
+            transform-origin: center;
+            /* Rotate to counteract the parent sector's rotation and make it upright */
+            transform: rotate(-45deg);
+        }
+        
+        #wheel-pointer {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 25px solid #000; /* Inverted pointer to point outwards */
+            z-index: 10;
+        }
+
+        .wheel-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+        }
+
+        #spin-btn {
+            transition: transform 0.2s ease-in-out;
+            cursor: pointer;
+            background-color: #3b82f6;
+            color: white;
+            font-weight: bold;
+            padding: 0.75rem 2rem;
+            border-radius: 9999px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        #spin-btn:hover {
+            background-color: #2563eb;
+            transform: scale(1.05);
+        }
+
+        #spin-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .btn-secondary {
+            transition: transform 0.2s ease-in-out;
+            cursor: pointer;
+            background-color: #6b7280;
+            color: white;
+            font-weight: bold;
+            padding: 0.75rem 2rem;
+            border-radius: 9999px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        .btn-secondary:hover {
+            background-color: #4b5563;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 font-sans">
+    <main class="bg-white p-8 rounded-2xl shadow-xl flex flex-col items-center" style="padding:2rem;">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Spin the Wheel!</h1>
+
+        <section id="wheel-container" class="flex justify-center" aria-label="Spin the wheel shop" style="margin-top:1.5rem;">
+            <div class="wheel-wrap" style="position:relative;">
+                <!-- fixed pointer -->
+                <div id="wheel-pointer" aria-hidden="true"></div>
+
+                <!-- the rotating disc (labels will be children so they rotate) -->
+                <div id="wheel" role="img" aria-label="Prize wheel">
+                    <div class="sector" style="transform: rotate(0deg);">
+                        <div class="text-content">Sunglasses</div>
+                    </div>
+                    <div class="sector" style="transform: rotate(90deg);">
+                        <div class="text-content">Hat</div>
+                    </div>
+                    <div class="sector" style="transform: rotate(180deg);">
+                        <div class="text-content">Bow</div>
+                    </div>
+                    <div class="sector" style="transform: rotate(270deg);">
+                        <div class="text-content">Sun</div>
+                    </div>
+                </div>
+
+                <!-- center spin button -->
+                <div class="wheel-center">
+                    <button id="spin-btn" class="btn btn-primary" type="button">SPIN</button>
+                </div>
+            </div>
+        </section>
+        
+        <div class="flex space-x-4 mt-4">
+            <button id="get-prizes-btn" class="btn btn-secondary flex items-center" type="button">
+                Get New Prizes ✨
+            </button>
+        </div>
+
+        <div id="wheel-result" class="text-center" style="margin-top:1rem;"></div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const spinButton = document.getElementById('spin-btn');
+            const getPrizesButton = document.getElementById('get-prizes-btn');
+            const spinner = document.getElementById('wheel');
+            const resultMessage = document.getElementById('wheel-result');
+
+            let accessories = ["Sunglasses", "Hat", "Bow", "Sun"];
+            updateWheelSectors();
+
+            // API configuration
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            spinButton.addEventListener('click', () => {
+                spinButton.disabled = true;
+                getPrizesButton.disabled = true;
+                resultMessage.textContent = "Spinning...";
+
+                const randomSpins = Math.floor(Math.random() * 5) + 5; // Spin 5-9 times
+                const randomStopAngle = Math.floor(Math.random() * 360);
+                const finalAngle = (360 * randomSpins) + randomStopAngle;
+
+                spinner.style.transform = `rotate(${finalAngle}deg)`;
+
+                // Listen for the end of the transition
+                spinner.addEventListener('transitionend', onTransitionEnd, { once: true });
+            });
+
+            getPrizesButton.addEventListener('click', async () => {
+                getPrizesButton.disabled = true;
+                spinButton.disabled = true;
+                resultMessage.textContent = "Getting new prizes...";
+                
+                try {
+                    const systemPrompt = "Generate a JSON array of exactly four unique and creative fashion accessories. The output must be a valid JSON array of strings, for example: [\"item1\", \"item2\", \"item3\", \"item4\"]. Do not include any other text or formatting.";
+
+                    const payload = {
+                        contents: [{ parts: [{ text: "fashion accessories" }] }],
+                        systemInstruction: {
+                            parts: [{ text: systemPrompt }]
+                        },
+                        generationConfig: {
+                            responseMimeType: "application/json",
+                            responseSchema: {
+                                type: "ARRAY",
+                                items: {
+                                    type: "STRING"
+                                }
+                            }
+                        }
+                    };
+                    
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`API error: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    const newAccessories = JSON.parse(result.candidates[0].content.parts[0].text);
+                    
+                    if (Array.isArray(newAccessories) && newAccessories.length === 4) {
+                        accessories = newAccessories;
+                        updateWheelSectors();
+                        resultMessage.textContent = "New prizes are ready! Spin to win!";
+                    } else {
+                        resultMessage.textContent = "Failed to get new prizes. Try again!";
+                    }
+                } catch (error) {
+                    console.error('Error fetching new prizes:', error);
+                    resultMessage.textContent = "Error fetching prizes. Try again!";
+                } finally {
+                    getPrizesButton.disabled = false;
+                    spinButton.disabled = false;
+                }
+            });
+
+            function onTransitionEnd() {
+                const finalRotation = getComputedStyle(spinner).getPropertyValue('transform');
+                const matrix = new DOMMatrixReadOnly(finalRotation);
+                const rotation = Math.atan2(matrix.b, matrix.a) * (180 / Math.PI);
+                const normalizedRotation = (360 - ((rotation % 360) + 360) % 360);
+
+                let sectorIndex;
+                if (normalizedRotation >= 0 && normalizedRotation < 90) {
+                    sectorIndex = 3;
+                } else if (normalizedRotation >= 90 && normalizedRotation < 180) {
+                    sectorIndex = 2;
+                } else if (normalizedRotation >= 180 && normalizedRotation < 270) {
+                    sectorIndex = 1;
+                } else {
+                    sectorIndex = 0;
+                }
+
+                resultMessage.textContent = `You won a ${accessories[sectorIndex]}!`;
+                spinButton.disabled = false;
+                getPrizesButton.disabled = false;
+            }
+
+            function updateWheelSectors() {
+                const sectors = spinner.querySelectorAll('.sector');
+                sectors.forEach((sector, index) => {
+                    // Update the text content of the text-content div
+                    const textContentDiv = sector.querySelector('.text-content');
+                    if (textContentDiv) {
+                        textContentDiv.textContent = accessories[index];
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
