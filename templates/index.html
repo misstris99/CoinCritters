@@ -14,7 +14,7 @@
             <div class="progress-section">
                 <div class="progress-text" id="progress-text">Step 1 of 3</div>
                 <div class="progress">
-                    <div class="progress-bar" id="progress-bar" style="width: 33.33%"></div>
+                    <div class="progress-bar" id="progress-bar" style="width: 33.33%; height: 10px;"></div>
                 </div>
             </div>
 
@@ -34,30 +34,30 @@
                 <div class="pet-card" data-pet="cat">
                     <img src="{{ url_for('static', filename='animals/cat.jpg') }}" alt="cat" class="pet-image">
                     <div>
-                        <h3 class="pet-name">Whiskers the Cat</h3>
+                        <h3 class="pet-name">Whiskers</h3>
                         <p class="pet-type">Playful Cat</p>
                     </div>
                 </div>
 
-                <!-- Dog -->
+                <!-- Turtle -->
                 <div class="pet-card" data-pet="turtle">
                     <img src="{{ url_for('static', filename='animals/turtle.jpg') }}" alt="Turtle" class="pet-image">
                     <div>
-                        <h3 class="pet-name">Tortino The Turtle</h3>
+                        <h3 class="pet-name">Tortino</h3>
                         <p class="pet-type">Tactful Turtle</p>
                     </div>
                 </div>
 
-                <!-- Cow -->
+                <!-- Fox -->
                 <div class="pet-card" data-pet="fox">
                     <img src="{{ url_for('static', filename='animals/fox.jpg') }}" alt="Foxy the Fox" class="pet-image">
                     <div>
                         <h3 class="pet-name">Foxy</h3>
-                        <p class="pet-type">Foxy The Fox</p>
+                        <p class="pet-type">Fiesty Fox</p>
                     </div>
                 </div>
 
-                <!-- Pig -->
+                <!-- Axolotl -->
                 <div class="pet-card" data-pet="axolotl">
                     <img src="{{ url_for('static', filename='animals/axolotl.jpg') }}" alt="Axy the Axolotl" class="pet-image">
                     <div>
@@ -71,7 +71,7 @@
             <div class="button-section">
                 <button 
                     id="continue-btn"
-                    class="continue-btn"
+                    class="btn btn-primary btn-lg px-12"
                     disabled
                 >
                     Continue with Pet

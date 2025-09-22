@@ -236,6 +236,7 @@ body {
   border: 2px solid hsl(var(--border));
   border-radius: calc(var(--radius) - 2px);
   padding: 1.5rem;
+  margin: 20px;
   cursor: pointer;
   transition: var(--transition-smooth);
   text-align: center;
@@ -271,7 +272,7 @@ body {
   height: 100%;
   background: var(--gradient-primary);
   transition: width 0.5s ease;
-  border-radius: 9999px;
+  border-radius: 9px;
 }
 
 .progress-bar-warm {
@@ -296,3 +297,16 @@ body {
 /* Hide/Show elements */
 .hidden { display: none; }
 .block { display: block; }
+
+.button-section{
+  width: 100%;
+  display: flex;
+  justify-content: center; 
+}
+.header-section{
+  width: 100%;
+  display: flex;
+  justify-content: center; 
+  flex-direction: column;
+  text-align: center;
+}

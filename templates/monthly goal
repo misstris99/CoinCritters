@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoinCritters - Save Money with Your Pet Companion</title>
+    <meta name="description" content="CoinCritters makes saving money fun! Choose your adorable pet companion and gamify your personal finance journey with daily budgets and monthly savings goals.">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="min-h-screen bg-background">
+           
+        <div class="container">
+            <!-- Progress Indicator -->
+            <div class="mb-8">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="text-sm text-muted-foreground" id="progress-text">Step 1 of 3</div>
+                </div>
+                <div class="w-full progress h-4">
+                    <div class="progress-bar" id="progress-bar" style="width: 33.33%; "></div>
+                </div>
+            </div>
+
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-foreground mb-4">
+                    Choose Your CoinCritter!
+                </h1>
+                <p class="text-xl text-muted-foreground">
+                    Pick a cute companion to help you save money
+                </p>
+            </div>
+
+            <!-- Pet Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Cat -->
+                <div class="pet-card" data-pet="cat">
+                    <img src="cat-pet.jpg" alt="Whiskers the cat" class="pet-image">
+                    <div>
+                        <h3 class="text-xl font-semibold text-foreground mb-2">Whiskers</h3>
+                        <p class="text-muted-foreground">Playful Cat</p>
+                    </div>
+                </div>
+
+                <!-- Dog -->
+                <div class="pet-card" data-pet="dog">
+                    <img src="dog-pet.jpg" alt="Buddy the dog" class="pet-image">
+                    <div>
+                        <h3 class="text-xl font-semibold text-foreground mb-2">Buddy</h3>
+                        <p class="text-muted-foreground">Loyal Dog</p>
+                    </div>
+                </div>
+
+                <!-- Cow -->
+                <div class="pet-card" data-pet="cow">
+                    <img src="cow-pet.jpg" alt="Moobert the cow" class="pet-image">
+                    <div>
+                        <h3 class="text-xl font-semibold text-foreground mb-2">Moobert</h3>
+                        <p class="text-muted-foreground">Gentle Cow</p>
+                    </div>
+                </div>
+
+                <!-- Pig -->
+                <div class="pet-card" data-pet="pig">
+                    <img src="pig-pet.jpg" alt="Pinky the pig" class="pet-image">
+                    <div>
+                        <h3 class="text-xl font-semibold text-foreground mb-2">Pinky</h3>
+                        <p class="text-muted-foreground">Smart Pig</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Continue Button -->
+            <div class="text-center">
+                <button 
+                    id="continue-btn"
+                    class="btn btn-primary btn-lg px-12"
+                    disabled
+                >
+                    Continue with Pet
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
