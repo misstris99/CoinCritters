@@ -4,152 +4,276 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Profile - CoinCritters</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta name="description" content="Your CoinCritters profile with your pet companion, monthly savings goal, and daily budget tracking.">
+    
     <style>
+        /* CoinCritters Design System */
         :root {
-          --background: 135 50% 98%; --foreground: 240 15% 15%; --card: 0 0% 100%;
-          --primary: 142 76% 36%; --primary-foreground: 0 0% 98%; --primary-glow: 142 76% 50%;
-          --muted: 210 40% 96%; --muted-foreground: 215 16% 47%; --accent: 35 100% 85%;
-          --destructive: 0 84% 60%; --border: 220 13% 91%; --input: 220 13% 91%; --radius: 1rem;
+          --background: 135 50% 98%;
+          --foreground: 240 15% 15%;
+          --card: 0 0% 100%;
+          --card-foreground: 240 15% 15%;
+          --primary: 142 76% 36%;
+          --primary-foreground: 0 0% 98%;
+          --primary-glow: 142 76% 50%;
+          --muted: 210 40% 96%;
+          --muted-foreground: 215 16% 47%;
+          --accent: 35 100% 85%;
+          --destructive: 0 84% 60%;
+          --border: 220 13% 91%;
+          --input: 220 13% 91%;
+          --radius: 1rem;
           --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-          --gradient-success: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+          --gradient-warm: linear-gradient(135deg, hsl(45 100% 85%), hsl(35 100% 80%));
+          --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 50%));
           --gradient-health: linear-gradient(135deg, hsl(100, 60%, 50%), hsl(120, 60%, 40%));
           --shadow-card: 0 8px 30px -8px hsl(240 15% 15% / 0.1);
+          --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.3);
           --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: hsl(var(--background)); color: hsl(var(--foreground)); }
-        .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+          background-color: hsl(var(--background)); /* Fallback color */
+          color: hsl(var(--foreground));
+          line-height: 1.6;
+          /* ADDED: Background image */
+          background-image: url("{{ url_for('static', filename='stacked-waves-haikei.svg') }}");
+          background-size: cover;
+          background-position: center;
+          background-attachment: fixed; /* Keeps background still on scroll */
+
+          /* ADDED: White outline effect for all text */
+          text-shadow: 
+            -1px -1px 0 #fff,  
+             1px -1px 0 #fff,
+            -1px  1px 0 #fff,
+             1px  1px 0 #fff;
+        }
+
+        .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 1.5rem;
+        }
+
+        /* Layout & Flex */
+        .min-h-screen { min-height: 100vh; }
         .flex { display: flex; }
+        .flex-1 { flex: 1 1 0%; }
+        .flex-grow { flex-grow: 1; }
         .flex-col { flex-direction: column; }
         .gap-6 { gap: 1.5rem; }
-        .gap-4 { gap: 1rem; }
-        .card { background: hsl(var(--card)); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow-card); flex: 1; display: flex; flex-direction: column;}
-        .btn { display: inline-flex; align-items: center; justify-content: center; height: 2.75rem; padding: 0 2rem; border-radius: 0.5rem; font-weight: 500; cursor: pointer; border: none; }
-        .btn-primary { background: var(--gradient-primary); color: hsl(var(--primary-foreground)); }
-        .btn-success { background: var(--gradient-success); color: hsl(var(--primary-foreground)); }
-        .btn-outline { border: 1px solid hsl(var(--border)); background: transparent; color: hsl(var(--foreground)); }
-        .btn-ghost { background: transparent; color: hsl(var(--muted-foreground)); }
-        .btn-ghost:hover { color: hsl(var(--foreground));}
-        .text-center { text-align: center; }
-        .mt-8 { margin-top: 2rem; }
-        .mt-4 { margin-top: 1rem; }
-        .mb-8 { margin-bottom: 2rem; }
-        .mb-4 { margin-bottom: 1rem; }
-        .mb-2 { margin-bottom: 0.5rem; }
-        .space-y-4 > * + * { margin-top: 1rem; }
-        .justify-between { justify-content: space-between; }
         .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        @media (min-width: 1024px) { .lg\:flex-row { flex-direction: row; } }
+        @media (min-width: 640px) { .sm\:flex-row { flex-direction: row; } }
+        .gap-4 { gap: 1rem; }
+        .justify-end { justify-content: flex-end; }
+        .space-y-4 > * + * { margin-top: 1rem; }
+        .space-y-6 > * + * { margin-top: 1.5rem; }
+
+        /* Typography */
+        .text-center { text-align: center; }
+        .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+        .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
         .font-bold { font-weight: 700; }
         .font-semibold { font-weight: 600; }
-        .text-4xl { font-size: 2.25rem; }
-        .text-3xl { font-size: 1.875rem; }
-        .text-2xl { font-size: 1.5rem; }
-        .text-xl { font-size: 1.25rem; }
-        .text-lg { font-size: 1.125rem; }
-        .text-sm { font-size: 0.875rem; }
+        .font-medium { font-weight: 500; }
+        .text-foreground { color: hsl(var(--foreground)); }
         .text-muted-foreground { color: hsl(var(--muted-foreground)); }
         .text-primary { color: hsl(var(--primary)); }
-        .mx-auto { margin-left: auto; margin-right: auto; }
+        .capitalize { text-transform: capitalize; }
+
+        /* Sizing & Spacing */
+        .w-full { width: 100%; }
         .w-32 { width: 8rem; }
+        .h-full { height: 100%; }
         .h-32 { height: 8rem; }
+        .h-4 { height: 1rem; }
+        .max-w-sm { max-width: 24rem; }
+        .p-6 { padding: 1.5rem; }
+        .p-8 { padding: 2rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mt-8 { margin-top: 2rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+
+        /* Card & Borders */
+        .card {
+          background: hsl(var(--card));
+          border: 1px solid hsl(var(--border));
+          border-radius: calc(var(--radius) - 2px);
+          box-shadow: var(--shadow-card);
+        }
         .rounded-full { border-radius: 9999px; }
-        .bg-accent { background: hsl(var(--accent)); }
+        .rounded-lg { border-radius: calc(var(--radius) - 2px); }
+
+        /* Background & Misc */
+        .bg-accent { background: hsl(var(--accent) / 0.2); }
         .object-cover { object-fit: cover; }
-        .progress { background: hsl(var(--muted)); border-radius: 9999px; overflow: hidden; height: 1rem; }
-        .progress-bar { height: 100%; transition: width 2s ease; border-radius: 9999px; }
-        .progress-bar-health { background: var(--gradient-health); }
-        .progress-bar-warm { background: linear-gradient(135deg, hsl(45 100% 85%), hsl(35 100% 80%)); }
-        .modal-overlay { background-color: rgba(30, 41, 59, 0.5); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
         .hidden { display: none; }
+        
+        /* Buttons */
+        .btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          white-space: nowrap;
+          border-radius: calc(var(--radius) - 2px);
+          font-size: 0.875rem;
+          font-weight: 500;
+          transition: var(--transition-smooth);
+          cursor: pointer;
+          border: none;
+        }
+        .btn-lg { height: 2.75rem; padding: 0 2rem; }
+        .btn-primary { background: var(--gradient-primary); color: hsl(var(--primary-foreground)); }
+        .btn-primary:hover { box-shadow: var(--shadow-glow); transform: translateY(-2px); }
+        .btn-success { background: var(--gradient-success); color: hsl(var(--primary-foreground)); }
+        .btn-outline { border: 1px solid hsl(var(--border)); background: transparent; color: hsl(var(--foreground)); }
+        .btn-outline:hover { background: hsl(var(--accent)); }
+        .btn-ghost { background: transparent; color: hsl(var(--muted-foreground)); }
+        .btn-ghost:hover { background: hsl(var(--accent)); color: hsl(var(--foreground));}
+
+        /* Input */
+        .input {
+          display: flex;
+          height: 2.5rem;
+          width: 100%;
+          border-radius: calc(var(--radius) - 2px);
+          border: 1px solid hsl(var(--input));
+          background: hsl(var(--background));
+          padding: 0.5rem 0.75rem;
+          font-size: 0.875rem;
+        }
+        .input:focus { outline: none; box-shadow: 0 0 0 2px hsl(var(--ring)); }
+
+        /* Progress Bar */
+        .progress { background: hsl(var(--muted)); border-radius: 9999px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--gradient-primary); transition: width 2s ease; border-radius: 9999px; }
+        .progress-bar-warm { background: var(--gradient-warm); }
+        .progress-bar-health { background: var(--gradient-health); }
+
+        /* Positioning */
         .fixed { position: fixed; }
         .top-0 { top: 0; }
         .left-0 { left: 0; }
-        .w-full { width: 100%; }
-        .h-full { height: 100%; }
         .z-50 { z-index: 50; }
-        .max-w-sm { max-width: 24rem; }
-        .max-w-md { max-width: 28rem; }
-        .input { display: block; width: 100%; height: 2.5rem; border-radius: 0.5rem; border: 1px solid hsl(var(--input)); padding: 0.5rem 0.75rem; }
-        .input:focus { outline: none; box-shadow: 0 0 0 2px hsl(var(--primary)); }
-        .justify-end { justify-content: flex-end; }
-        @media (min-width: 640px) { .sm\:flex-row { flex-direction: row; } }
-        @media (min-width: 1024px) { .lg\:flex-row { flex-direction: row; } }
+
+        /* Styles for the modal overlay to create the blur effect */
+        .modal-overlay {
+          background-color: rgba(30, 41, 59, 0.5);
+          -webkit-backdrop-filter: blur(4px);
+          backdrop-filter: blur(4px);
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="flex justify-between items-center mb-8">
-            <h1 class="text-3xl font-bold">Your CoinCritters Profile</h1>
-            <button id="sign-out-btn" class="btn btn-ghost">Sign Out</button>
-        </div>
-        
-        <div class="flex flex-col lg:flex-row gap-6">
-            <!-- Critter Card -->
-            <div class="card">
-                <div class="text-center space-y-4" style="flex-grow: 1;">
-                    <h2 class="text-2xl font-bold">Your Critter</h2>
-                    <div class="w-32 h-32 mx-auto rounded-full bg-accent overflow-hidden">
-                        <img id="pet-image" src="" alt="Your pet companion" class="w-full h-full object-cover">
-                    </div>
-                    <div>
-                        <h3 id="pet-name" class="text-xl font-semibold"></h3>
-                        <p id="pet-type" class="text-muted-foreground capitalize"></p>
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <div class="progress"><div id="health-bar-fill" class="progress-bar progress-bar-health" style="width: 0%;"></div></div>
-                    <p class="text-sm text-muted-foreground mt-2 text-center">80% Healthy</p>
-                </div>
+    <!-- REMOVED: .min-h-screen and .bg-background to let body background show -->
+    <div>
+        <div class="container">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-foreground mb-2">
+                    Welcome to CoinCritters!
+                </h1>
+                <p class="text-xl text-muted-foreground">
+                    You're all set up and ready to save money with your critter
+                </p>
             </div>
-            <!-- Monthly Goal Card -->
-            <div class="card">
-                <div class="text-center space-y-4" style="flex-grow: 1;">
-                    <h2 class="text-2xl font-bold">Monthly Goal</h2>
-                    <div id="monthly-goal-amount" class="text-4xl font-bold text-primary"></div>
-                    <p class="text-muted-foreground">Target savings per month</p>
-                </div>
-                <div class="mt-4">
-                    <div class="progress"><div class="progress-bar" style="width: 25%;"></div></div>
-                    <p class="text-sm text-muted-foreground mt-2 text-center">25% complete this month</p>
-                </div>
-            </div>
-            <!-- Daily Budget Card -->
-            <div class="card">
-                <div class="text-center space-y-4" style="flex-grow: 1;">
-                    <h2 class="text-2xl font-bold">Daily Budget</h2>
-                    <div id="daily-budget-amount" class="text-4xl font-bold"></div>
-                    <p class="text-muted-foreground">Available to spend today</p>
-                </div>
-                <div class="mt-4">
-                    <div class="progress"><div class="progress-bar progress-bar-warm" style="width: 75%;"></div></div>
-                    <p class="text-sm text-muted-foreground mt-2 text-center">75% of daily budget remaining</p>
-                </div>
-            </div>
-        </div>
 
-        <div class="text-center mt-8 space-y-4">
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button id="add-expense-btn" class="btn btn-primary">Add Expense</button>
-                <button class="btn btn-success">Record Savings</button>
-            </div>
-        </div>
+            <!-- Main Content Grid -->
+            <div class="flex flex-col lg:flex-row gap-6">
+                <!-- Your Critter Card -->
+                <div class="card p-6 flex flex-col h-full flex-1">
+                    <div class="text-center space-y-4 flex-grow">
+                        <h2 class="text-2xl font-bold text-foreground">Your Critter</h2>
+                        <div class="w-32 h-32 mx-auto rounded-full overflow-hidden bg-accent">
+                            <img 
+                                id="pet-image"
+                                src="{{ url_for('static', filename='animals/cat.jpg') }}" 
+                                alt="Your pet companion"
+                                class="w-full h-full object-cover"
+                            />
+                        </div>
+                        <div>
+                            <h3 id="pet-name" class="text-xl font-semibold text-foreground">Whiskers</h3>
+                            <p id="pet-type" class="text-muted-foreground capitalize">Your cat companion</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="progress h-4 w-full">
+                            <div id="health-bar-fill" class="progress-bar progress-bar-health" style="width: 0;"></div>
+                        </div>
+                        <p class="text-sm text-muted-foreground mt-2">80% Healthy</p>
+                    </div>
+                </div>
 
-        <div class="mt-8">
-            <h2 class="text-2xl font-bold mb-4 text-center">Recent Expenses</h2>
-            <div id="expense-list" class="space-y-4 max-w-md mx-auto">
-                <p class="text-muted-foreground text-center">Loading expenses...</p>
+                <!-- Monthly Goal Card -->
+                <div class="card p-6 flex flex-col h-full flex-1">
+                     <div class="text-center space-y-4 flex-grow">
+                        <h2 class="text-2xl font-bold text-foreground">Monthly Goal</h2>
+                        <div class="space-y-4">
+                            <div id="monthly-goal-amount" class="text-4xl font-bold text-primary">₹500</div>
+                            <p class="text-muted-foreground">Target savings per month</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="w-full progress h-4">
+                            <div class="progress-bar" style="width: 25%"></div>
+                        </div>
+                        <p class="text-sm text-muted-foreground mt-2">25% complete this month</p>
+                    </div>
+                </div>
+
+                <!-- Daily Budget Card -->
+                <div class="card p-6 flex flex-col h-full flex-1">
+                     <div class="text-center space-y-4 flex-grow">
+                        <h2 class="text-2xl font-bold text-foreground">Daily Budget</h2>
+                        <div class="space-y-4">
+                            <div id="daily-budget-amount" class="text-4xl font-bold text-foreground">₹16.7</div>
+                            <p class="text-muted-foreground">Available to spend today</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="w-full progress h-4">
+                            <div class="progress-bar progress-bar-warm" style="width: 75%"></div>
+                        </div>
+                        <p class="text-sm text-muted-foreground mt-2">75% of daily budget remaining</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="text-center mt-8 space-y-4">
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button id="add-expense-btn" class="btn btn-primary btn-lg">Add Expense</button>
+                    <button class="btn btn-success btn-lg">Record Savings</button>
+                    <button class="btn btn-outline btn-lg">View History</button>
+                </div>
+                <button id="settings-btn" class="btn btn-ghost text-muted-foreground">Change Settings</button>
             </div>
         </div>
     </div>
 
-    <!-- Add Expense Modal -->
+    <!-- Add Expense Popup (Modal) -->
     <div id="add-expense-modal" class="hidden fixed top-0 left-0 w-full h-full modal-overlay flex items-center justify-center z-50">
-        <div class="card p-8 w-full max-w-sm">
-            <h2 class="text-2xl font-bold mb-4">Add Expense</h2>
-            <div class="mb-4">
+        <div class="card p-8 rounded-lg w-full max-w-sm space-y-6">
+            <h2 class="text-2xl font-bold text-foreground">Add Expense</h2>
+            <div>
                 <label for="expense-amount" class="text-sm font-medium text-muted-foreground">Amount Spent (₹)</label>
-                <input id="expense-amount" type="number" step="0.01" min="0" class="input mt-2" placeholder="0.00">
+                <input id="expense-amount" type="number" step="0.01" min="0" class="input mt-2" placeholder="0.00" />
             </div>
             <div class="flex justify-end gap-4">
                 <button id="cancel-expense-btn" class="btn btn-outline">Cancel</button>
@@ -160,103 +284,68 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const SUPABASE_URL = 'https://vmeihwydhvvtjcmjwxzn.supabase.co';
-            const SUPABASE_ANON_KEY = 'sb_publishable_ASxcqQlWVg_e92Ct_zVaDg_PkGoYx84';
-            const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-            // --- REFACTORED AUTH CHECK ---
-            // Use onAuthStateChange for a reliable session check
-            supabaseClient.auth.onAuthStateChange((event, session) => {
-                if (session) {
-                    // This block runs if the user is logged in
-                    console.log('User is logged in:', session.user.id);
-                    loadPageData();
-                    fetchExpenses();
-                } else {
-                    // This block runs if no user is logged in
-                    console.log('No user session found. Redirecting to login.');
-                    window.location.href = '/'; 
-                }
-            });
-
-            const loadPageData = () => {
-                const petNames = { cat: 'Whiskers...', turtle: 'Tortino...', fox: 'Foxy', axolotl: 'Axy' };
-                const petImages = { cat: 'animals/cat.jpg', turtle: 'animals/turtle.jpg', fox: 'animals/fox.jpg', axolotl: 'animals/axolotl.jpg' };
-                
-                // Now we remove the default values. If there's no data, it means setup is not complete.
-                const data = JSON.parse(localStorage.getItem('coincritters-data'));
-
-                if (!data) {
-                    // If the setup data isn't in localStorage, the user needs to go through the setup flow.
-                    // This is where you would redirect to your first setup page (e.g., pet selection).
-                    // For now, we'll log an error.
-                    console.error("User setup data not found in localStorage.");
-                    // window.location.href = '/setup-pet'; // Example redirect
-                    return;
-                }
-                
-                document.getElementById('pet-image').src = `/static/${petImages[data.selectedPet]}`;
-                document.getElementById('pet-name').textContent = petNames[data.selectedPet];
-                document.getElementById('pet-type').textContent = `Your ${data.selectedPet} companion`;
-                document.getElementById('monthly-goal-amount').textContent = `₹${data.monthlyGoal}`;
-                document.getElementById('daily-budget-amount').textContent = `₹${data.dailyBudget}`;
-                setTimeout(() => { document.getElementById('health-bar-fill').style.width = '80%'; }, 100);
+            
+            const petNames = { cat: 'Whiskers the Cat', turtle: 'Tortino The Turtle', fox: 'Foxy', axolotl: 'Axy' };
+            const petImages = { cat: 'animals/cat.jpg', turtle: 'animals/turtle.jpg', fox: 'animals/fox.jpg', axolotl: 'animals/axolotl.jpg' };
+            
+            const loadData = () => {
+              const saved = localStorage.getItem('coincritters-data');
+              return saved ? JSON.parse(saved) : {
+                selectedPet: 'cat', monthlyGoal: 500, dailyBudget: 16.7
+              };
             };
+            
+            const data = loadData();
 
-            // --- EXPENSE MODAL ---
+            const petImageEl = document.getElementById('pet-image');
+            const petNameEl = document.getElementById('pet-name');
+            const petTypeEl = document.getElementById('pet-type');
+            if (data.selectedPet) {
+              petImageEl.src = `/static/${petImages[data.selectedPet]}`;
+              petNameEl.textContent = petNames[data.selectedPet];
+              petTypeEl.textContent = `Your ${data.selectedPet} companion`;
+            }
+
+            document.getElementById('monthly-goal-amount').textContent = `₹${data.monthlyGoal}`;
+            document.getElementById('daily-budget-amount').textContent = `₹${data.dailyBudget}`;
+
+            const healthBarFill = document.getElementById('health-bar-fill');
+            if (healthBarFill) {
+                setTimeout(() => { healthBarFill.style.width = '80%'; }, 100);
+            }
+
             const addExpenseModal = document.getElementById('add-expense-modal');
             const openModalBtn = document.getElementById('add-expense-btn');
             const closeModalBtn = document.getElementById('cancel-expense-btn');
             const confirmExpenseBtn = document.getElementById('confirm-expense-btn');
             const expenseAmountInput = document.getElementById('expense-amount');
 
-            openModalBtn.addEventListener('click', () => addExpenseModal.classList.remove('hidden'));
-            closeModalBtn.addEventListener('click', () => addExpenseModal.classList.add('hidden'));
+            if (addExpenseModal && openModalBtn && closeModalBtn && confirmExpenseBtn && expenseAmountInput) {
+                openModalBtn.addEventListener('click', () => {
+                    addExpenseModal.classList.remove('hidden');
+                    addExpenseModal.classList.add('flex');
+                });
 
-            confirmExpenseBtn.addEventListener('click', async () => {
-                const amount = parseFloat(expenseAmountInput.value);
-                if (!amount || amount <= 0) return alert('Please enter a valid amount.');
-                
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                if (!user) return alert("Could not find user. Please refresh.");
-
-                const { error } = await supabaseClient.from('expenses').insert({ amount, user_id: user.id });
-
-                if (error) {
-                    console.error('Error adding expense:', error);
-                    alert('Could not add expense.');
-                } else {
+                const closeExpenseModal = () => {
                     addExpenseModal.classList.add('hidden');
+                    addExpenseModal.classList.remove('flex');
                     expenseAmountInput.value = '';
-                    fetchExpenses();
-                }
-            });
+                };
+                
+                closeModalBtn.addEventListener('click', closeExpenseModal);
 
-            // --- FETCH EXPENSES ---
-            const fetchExpenses = async () => {
-                const expenseList = document.getElementById('expense-list');
-                const { data: expenses, error } = await supabaseClient.from('expenses').select('*').order('created_at', { ascending: false });
+                const handleAddExpense = () => {
+                    const amount = expenseAmountInput.value;
+                    if (!amount || parseFloat(amount) <= 0) {
+                        alert('Please enter a valid amount.');
+                        return;
+                    }
+                    alert('Expense added: ₹' + amount);
+                    closeExpenseModal();
+                };
 
-                if (error) return console.error('Error fetching expenses:', error);
-
-                if (expenses.length === 0) {
-                    expenseList.innerHTML = '<p class="text-muted-foreground text-center">No expenses recorded yet.</p>';
-                    return;
-                }
-
-                expenseList.innerHTML = expenses.map(e => `
-                    <div class="card p-4 flex justify-between items-center">
-                        <span class="font-semibold">Expense Recorded</span>
-                        <span class="font-bold text-lg text-primary">₹${e.amount}</span>
-                    </div>
-                `).join('');
-            };
-
-            // --- SIGN OUT ---
-            document.getElementById('sign-out-btn').addEventListener('click', async () => {
-                await supabaseClient.auth.signOut();
-                window.location.href = '/';
-            });
+                confirmExpenseBtn.addEventListener('click', handleAddExpense);
+            }
         });
     </script>
 </body>
