@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - CoinCritters</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+          --background: 135 50% 98%; --foreground: 240 15% 15%; --card: 0 0% 100%;
+          --primary: 142 76% 36%; --primary-foreground: 0 0% 98%; --primary-glow: 142 76% 50%;
+          --destructive: 0 84% 60%; --border: 220 13% 91%; --input: 220 13% 91%; --radius: 1rem;
+          --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+          --shadow-card: 0 8px 30px -8px hsl(240 15% 15% / 0.1);
+          --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: hsl(var(--background)); color: hsl(var(--foreground)); display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .container { max-width: 400px; width: 100%; padding: 2rem; }
+        .card { background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); box-shadow: var(--shadow-card); padding: 2rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; font-weight: 500; margin-bottom: 0.5rem; }
+        .input { display: block; width: 100%; height: 2.5rem; border-radius: 0.5rem; border: 1px solid hsl(var(--input)); padding: 0.5rem 0.75rem; transition: var(--transition-smooth); }
+        .input:focus { outline: none; box-shadow: 0 0 0 2px hsl(var(--primary)); }
+        .btn { display: inline-flex; align-items: center; justify-content: center; width: 100%; height: 2.75rem; border-radius: 0.5rem; font-weight: 500; transition: var(--transition-smooth); cursor: pointer; border: none; background: var(--gradient-primary); color: hsl(var(--primary-foreground)); }
+        .btn:hover { transform: translateY(-2px); }
+        .text-center { text-align: center; }
+        .mt-4 { margin-top: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .font-bold { font-weight: 700; }
+        .text-sm { font-size: 0.875rem; }
+        .link { color: hsl(var(--primary)); text-decoration: none; cursor: pointer; }
+        .link:hover { text-decoration: underline; }
+        .error-message { color: hsl(var(--destructive)); margin-top: 1rem; text-align: center; min-height: 1.25rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1 class="text-2xl font-bold text-center mb-6" id="form-title">Log In to CoinCritters</h1>
+            <div id="auth-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" class="input" placeholder="you@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="input" placeholder="••••••••" required>
+                </div>
+                <button id="auth-btn" class="btn">Log In</button>
+            </div>
+            <p id="error-message" class="error-message"></p>
+            <p class="text-center mt-4 text-sm">
+                <span id="prompt-text">Don't have an account?</span>
+                <a id="switch-auth" class="link">Sign Up</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const SUPABASE_URL = 'https://vmeihwydhvvtjcmjwxzn.supabase.co';
+            const SUPABASE_ANON_KEY = 'sb_publishable_ASxcqQlWVg_e92Ct_zVaDg_PkGoYx84';
+            const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            const formTitle = document.getElementById('form-title');
+            const authBtn = document.getElementById('auth-btn');
+            const switchAuthLink = document.getElementById('switch-auth');
+            const promptText = document.getElementById('prompt-text');
+            const errorMessage = document.getElementById('error-message');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            let isLoginMode = true;
+
+            supabaseClient.auth.getSession().then(({ data: { session } }) => {
+                if (session) {
+                    window.location.href = '/profile';
+                }
+            });
+
+            const switchMode = () => {
+                isLoginMode = !isLoginMode;
+                formTitle.textContent = isLoginMode ? 'Log In to CoinCritters' : 'Create an Account';
+                authBtn.textContent = isLoginMode ? 'Log In' : 'Sign Up';
+                promptText.textContent = isLoginMode ? "Don't have an account?" : "Already have an account?";
+                switchAuthLink.textContent = isLoginMode ? 'Sign Up' : 'Log In';
+                errorMessage.textContent = '';
+            };
+
+            switchAuthLink.addEventListener('click', switchMode);
+
+            authBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                errorMessage.textContent = '';
+                const email = emailInput.value;
+                const password = passwordInput.value;
+
+                if (isLoginMode) {
+                    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                    if (error) {
+                        errorMessage.textContent = error.message;
+                    } else {
+                        window.location.href = '/profile';
+                    }
+                } else {
+                    // Sign Up Logic
+                    const { error } = await supabaseClient.auth.signUp({ email, password });
+                    if (error) {
+                        errorMessage.textContent = error.message;
+                    } else {
+                        // **UPDATED:** Redirect to the confirmation page on successful sign up
+                        window.location.href = '/confirm-email';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
